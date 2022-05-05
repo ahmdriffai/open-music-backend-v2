@@ -5,7 +5,7 @@ module.exports = {
   name: 'users',
   version: '1.0.0',
   register: async (server) => {
-    const songsHandler = new UsersHandler();
-    server.route(routes(songsHandler));
+    const usersHandler = new UsersHandler();
+    server.route(routes(usersHandler));
   },
 };

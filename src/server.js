@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const Hapi = require('@hapi/hapi');
 const albums = require('./api/albums');
+const authenticatios = require('./api/authenticatios');
 const songs = require('./api/songs');
 const users = require('./api/users');
 
@@ -25,6 +26,9 @@ const init = async () => {
     },
     {
       plugin: users,
+    },
+    {
+      plugin: authenticatios,
     },
   ]);
 
