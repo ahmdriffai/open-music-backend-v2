@@ -1,9 +1,11 @@
-const ClientError = require('../../exception/ClientError');
+const errorResponse = require('../../payload/response/errorResponse');
+const AlbumsService = require('../../services/postgres/AlbumsService');
+const AlbumsValidator = require('../../validator/albums/index');
 
 class AlbumsHandler {
-  constructor(service, validator) {
-    this._service = service;
-    this._validator = validator;
+  constructor() {
+    this._albumsService = new AlbumsService();
+    this._validator = AlbumsValidator;
 
     this.postAlbumHandler = this.postAlbumHandler.bind(this);
     this.getAlbumByIdHandler = this.getAlbumByIdHandler.bind(this);
@@ -16,7 +18,7 @@ class AlbumsHandler {
       this._validator.validateAlbumPayload(request.payload);
 
       const { name, year } = request.payload;
-      const albumId = await this._service.addAlbum({ name, year });
+      const albumId = await this._albumsService.addAlbum({ name, year });
 
       const response = h.response({
         status: 'success',
@@ -28,25 +30,7 @@ class AlbumsHandler {
       response.code(201);
       return response;
     } catch (error) {
-      if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-
-        response.code(error.statusCode);
-        return response;
-      }
-
-      // server erorr
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf, terjadi kegagalan pada server kami.',
-      });
-
-      response.code(500);
-      console.error(error);
-      return response;
+      return errorResponse(h, error);
     }
   }
 
@@ -54,7 +38,7 @@ class AlbumsHandler {
     try {
       const { id } = request.params;
 
-      const album = await this._service.getAlbumById(id);
+      const album = await this._albumsService.getAlbumById(id);
 
       return {
         status: 'success',
@@ -63,25 +47,7 @@ class AlbumsHandler {
         },
       };
     } catch (error) {
-      if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-
-        response.code(error.statusCode);
-        return response;
-      }
-
-      // server erorr
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf, terjadi kegagalan pada server kami.',
-      });
-
-      response.code(500);
-      console.error(error);
-      return response;
+      return errorResponse(h, error);
     }
   }
 
@@ -92,7 +58,7 @@ class AlbumsHandler {
       const { id } = request.params;
       const { name, year } = request.payload;
 
-      await this._service.editAlbumById(id, { name, year });
+      await this._albumsService.editAlbumById(id, { name, year });
 
       const response = h.response({
         status: 'success',
@@ -101,32 +67,14 @@ class AlbumsHandler {
 
       return response;
     } catch (error) {
-      if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-
-        response.code(error.statusCode);
-        return response;
-      }
-
-      // server erorr
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf, terjadi kegagalan pada server kami.',
-      });
-
-      response.code(500);
-      console.error(error);
-      return response;
+      return errorResponse(h, error);
     }
   }
 
   async deleteAlbumByIdHandler(request, h) {
     try {
       const { id } = request.params;
-      await this._service.deleteAlbumById(id);
+      await this._albumsService.deleteAlbumById(id);
 
       const response = h.response({
         status: 'success',
@@ -135,25 +83,7 @@ class AlbumsHandler {
 
       return response;
     } catch (error) {
-      if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-
-        response.code(error.statusCode);
-        return response;
-      }
-
-      // server erorr
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf, terjadi kegagalan pada server kami.',
-      });
-
-      response.code(500);
-      console.error(error);
-      return response;
+      return errorResponse(h, error);
     }
   }
 }
