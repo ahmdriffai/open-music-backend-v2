@@ -7,6 +7,7 @@ const mapResponseSongs = require('../../utils/mapResponseSongs');
 class SongsService {
   constructor() {
     this._pool = new Pool();
+    this._tableName = 'songs';
   }
 
   async addSong({
@@ -77,6 +78,19 @@ class SongsService {
 
     if (!result.rows.length) {
       throw new NotFoundError('Gagal menghapus song, id tidak ditemukan');
+    }
+  }
+
+  async existSongById(id) {
+    const query = {
+      text: `SELECT id FROM ${this._tableName} WHERE id = $1`,
+      values: [id],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      throw new NotFoundError('Lagu tidak ditemukan.');
     }
   }
 }
