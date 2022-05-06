@@ -2,7 +2,6 @@ const { nanoid } = require('nanoid');
 const { Pool } = require('pg');
 const InvariantError = require('../../exception/InvariantError');
 const NotFoundError = require('../../exception/NotFoundError');
-const mapResponseSongs = require('../../utils/mapResponseSongs');
 
 class SongsService {
   constructor() {
@@ -30,12 +29,12 @@ class SongsService {
 
   async getSongs({ title, performer }) {
     const query = {
-      text: 'SELECT * FROM songs WHERE title ILIKE $1 AND performer ILIKE $2',
+      text: 'SELECT id, title, performer FROM songs WHERE title ILIKE $1 AND performer ILIKE $2',
       values: [`%${title}%`, `%${performer}%`],
     };
 
     const result = await this._pool.query(query);
-    return result.rows.map(mapResponseSongs);
+    return result.rows;
   }
 
   async getSongById(id) {
