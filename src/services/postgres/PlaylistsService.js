@@ -42,6 +42,38 @@ class PlaylistsService {
     return result.rows;
   }
 
+  async getPlaylistById(id) {
+    const query = {
+      text: `SELECT p.id, p.name, u.username 
+      FROM ${this._tableName} AS p 
+      LEFT JOIN users AS u
+      ON u.id = p.owner
+      WHERE p.id = $1`,
+      values: [id],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      throw new NotFoundError('Playlist tidak ditemukan');
+    }
+
+    return result.rows[0];
+  }
+
+  async deleteById(id) {
+    const query = {
+      text: `DELETE FROM ${this._tableName} WHERE id = $1 RETURNING id`,
+      values: [id],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      throw new NotFoundError('Playlist gagal dihapus. Id tidak ditemukan');
+    }
+  }
+
   async verifyPlaylistOwner(id, owner) {
     const query = {
       text: `SELECT * FROM ${this._tableName} WHERE id = $1`,

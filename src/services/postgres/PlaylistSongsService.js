@@ -19,10 +19,23 @@ class PlaylistSongsService {
     const result = await this._pool.query(query);
 
     if (!result.rows.length) {
-      throw new InvariantError('Kolaborasi gagal ditambahkan');
+      throw new InvariantError('Lagu gagal ditambahkan ke playlist');
     }
 
     return result.rows[0].id;
+  }
+
+  async deletePlaylistSong(playlistId, songId) {
+    const query = {
+      text: `DELETE FROM ${this._tableName} WHERE playlist_id = $1 AND song_id = $2 RETURNING id`,
+      values: [playlistId, songId],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      throw new InvariantError('Lagu gagal dihapus');
+    }
   }
 }
 

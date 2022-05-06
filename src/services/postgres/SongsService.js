@@ -93,6 +93,27 @@ class SongsService {
       throw new NotFoundError('Lagu tidak ditemukan.');
     }
   }
+
+  async getSongByPlaylsitId(playlistId) {
+    const query = {
+      text: `SELECT s.id, s.title, s.performer 
+      FROM ${this._tableName} as s 
+      LEFT JOIN playlist_songs as ps
+      ON s.id = ps.song_id 
+      JOIN playlists as p 
+      ON ps.playlist_id = p.id 
+      WHERE p.id = $1`,
+      values: [playlistId],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      throw new NotFoundError('Lagu tidak ditemukan');
+    }
+
+    return result.rows;
+  }
 }
 
 module.exports = SongsService;
