@@ -1,7 +1,7 @@
-const errorResponse = require('../../payload/response/errorResponse');
 const AuthenticationsService = require('../../services/postgres/AuthenticationsService');
 const UserServices = require('../../services/postgres/UsersService');
 const TokenManager = require('../../tokenize/TokenManager');
+const errorResponse = require('../../utils/errorResponse');
 const AuthenticationsValidator = require('../../validator/authenticatios');
 
 class AuthenticationsHandler {

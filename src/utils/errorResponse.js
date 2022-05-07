@@ -1,4 +1,4 @@
-const ClientError = require('../../exception/ClientError');
+const ClientError = require('../exception/ClientError');
 
 const errorResponse = (h, error) => {
   if (error instanceof ClientError) {

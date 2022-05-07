@@ -1,7 +1,8 @@
-const errorResponse = require('../../payload/response/errorResponse');
+const CollaborationsService = require('../../services/postgres/CollaborationsService');
 const PlaylistSongsService = require('../../services/postgres/PlaylistSongsService');
 const PlaylistsService = require('../../services/postgres/PlaylistsService');
 const SongsService = require('../../services/postgres/SongsService');
+const errorResponse = require('../../utils/errorResponse');
 const PlaylistSongsValidator = require('../../validator/playlistSongs');
 
 class PlaylistSongsHandler {
@@ -10,6 +11,7 @@ class PlaylistSongsHandler {
     this._playlistsService = new PlaylistsService();
     this._playlistSongsService = new PlaylistSongsService();
     this._songsService = new SongsService();
+    this._collaborationsService = new CollaborationsService();
 
     this.postPlaylistSongHandler = this.postPlaylistSongHandler.bind(this);
     this.getPlaylistSongHandler = this.getPlaylistSongHandler.bind(this);
@@ -26,7 +28,9 @@ class PlaylistSongsHandler {
 
       await this._songsService.existSongById(songId);
 
-      await this._playlistsService.verifyPlaylistOwner(playlistId, credentialId);
+      await this._playlistsService.verifyPlaylistAccess(playlistId, credentialId);
+
+      await this._playlistSongsService.verifyPlaylistSongs(playlistId, songId);
 
       await this._playlistSongsService.addPlaylistSong(playlistId, songId);
 
@@ -46,7 +50,7 @@ class PlaylistSongsHandler {
       const { id: playlistId } = request.params;
       const { id: credentialId } = request.auth.credentials;
 
-      await this._playlistsService.verifyPlaylistOwner(playlistId, credentialId);
+      await this._playlistsService.verifyPlaylistAccess(playlistId, credentialId);
 
       const playlist = await this._playlistsService.getPlaylistById(playlistId);
       const songs = await this._songsService.getSongByPlaylsitId(playlistId);
@@ -77,7 +81,7 @@ class PlaylistSongsHandler {
 
       await this._songsService.existSongById(songId);
 
-      await this._playlistsService.verifyPlaylistOwner(playlistId, credentialId);
+      await this._playlistsService.verifyPlaylistAccess(playlistId, credentialId);
 
       await this._playlistSongsService.deletePlaylistSong(playlistId, songId);
 

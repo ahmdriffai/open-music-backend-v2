@@ -37,6 +37,19 @@ class PlaylistSongsService {
       throw new InvariantError('Lagu gagal dihapus');
     }
   }
+
+  async verifyPlaylistSongs(playlistId, songId) {
+    const query = {
+      text: `SELECT * FROM ${this._tableName} WHERE playlist_id = $1 AND song_id = $2`,
+      values: [playlistId, songId],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (result.rows.length) {
+      throw new InvariantError('Lagu sudah terdaftar');
+    }
+  }
 }
 
 module.exports = PlaylistSongsService;

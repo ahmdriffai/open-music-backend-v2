@@ -8,6 +8,7 @@ const songs = require('./api/songs');
 const users = require('./api/users');
 const playlists = require('./api/playlists');
 const playlistSongs = require('./api/playlistSongs');
+const collaborations = require('./api/collaborations');
 
 const init = async () => {
   const server = Hapi.server({
@@ -61,6 +62,9 @@ const init = async () => {
     },
     {
       plugin: playlistSongs,
+    },
+    {
+      plugin: collaborations,
     },
   ]);
 

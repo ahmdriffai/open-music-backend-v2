@@ -1,5 +1,5 @@
-const errorResponse = require('../../payload/response/errorResponse');
 const UserServices = require('../../services/postgres/UsersService');
+const errorResponse = require('../../utils/errorResponse');
 const UsersValidator = require('../../validator/users');
 
 class UsersHandler {

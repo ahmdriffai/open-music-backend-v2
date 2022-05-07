@@ -1,5 +1,5 @@
-const errorResponse = require('../../payload/response/errorResponse');
 const AlbumsService = require('../../services/postgres/AlbumsService');
+const errorResponse = require('../../utils/errorResponse');
 const AlbumsValidator = require('../../validator/albums/index');
 
 class AlbumsHandler {

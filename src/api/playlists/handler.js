@@ -1,5 +1,5 @@
-const errorResponse = require('../../payload/response/errorResponse');
 const PlaylistsService = require('../../services/postgres/PlaylistsService');
+const errorResponse = require('../../utils/errorResponse');
 const PlaylistsValidator = require('../../validator/playlists');
 
 class PlaylistsHandler {
