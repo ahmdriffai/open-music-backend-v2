@@ -43,7 +43,7 @@ class LikesHandler {
       });
 
       if (likes.isChace) {
-        respone.header('X-Data-Source', 'chace');
+        respone.header('X-Data-Source', 'cache');
       }
 
       return respone;
