@@ -1,3 +1,4 @@
+const ActivitiesService = require('../../services/postgres/ActivitiesService');
 const CollaborationsService = require('../../services/postgres/CollaborationsService');
 const PlaylistSongsService = require('../../services/postgres/PlaylistSongsService');
 const PlaylistsService = require('../../services/postgres/PlaylistsService');
@@ -12,6 +13,7 @@ class PlaylistSongsHandler {
     this._playlistSongsService = new PlaylistSongsService();
     this._songsService = new SongsService();
     this._collaborationsService = new CollaborationsService();
+    this._activitiesService = new ActivitiesService();
 
     this.postPlaylistSongHandler = this.postPlaylistSongHandler.bind(this);
     this.getPlaylistSongHandler = this.getPlaylistSongHandler.bind(this);
@@ -34,11 +36,16 @@ class PlaylistSongsHandler {
 
       await this._playlistSongsService.addPlaylistSong(playlistId, songId);
 
+      await this._activitiesService.addActivities({
+        playlistId, songId, userId: credentialId, action: 'add',
+      });
+
       const response = h.response({
         status: 'success',
         message: 'Berhasil menambahkan lagu ke playlist',
       });
       response.code(201);
+
       return response;
     } catch (error) {
       return errorResponse(h, error);
@@ -84,6 +91,10 @@ class PlaylistSongsHandler {
       await this._playlistsService.verifyPlaylistAccess(playlistId, credentialId);
 
       await this._playlistSongsService.deletePlaylistSong(playlistId, songId);
+
+      await this._activitiesService.addActivities({
+        playlistId, songId, userId: credentialId, action: 'delete',
+      });
 
       return {
         status: 'success',
