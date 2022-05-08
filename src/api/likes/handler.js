@@ -42,7 +42,7 @@ class LikesHandler {
         },
       });
 
-      if (likes.isChace) {
+      if (likes.caches) {
         respone.header('X-Data-Source', 'cache');
       }
 

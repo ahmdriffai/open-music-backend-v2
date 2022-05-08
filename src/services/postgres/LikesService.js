@@ -47,7 +47,7 @@ class LikesService {
   async getLikes(albumId) {
     try {
       const result = await this._chaceService.get(`likes:${albumId}`);
-      return { likes: JSON.parse(result), isChace: 1 };
+      return { likes: JSON.parse(result), caches: 1 };
     } catch (error) {
       const query = {
         text: `SELECT user_id FROM ${this._tableName} WHERE album_id = $1`,
@@ -58,7 +58,7 @@ class LikesService {
 
       await this._chaceService.set(`likes:${albumId}`, JSON.stringify(result.rowCount));
 
-      return result.rowCount;
+      return { likes: JSON.parse(result.rowCount), caches: 0 };
     }
   }
 
