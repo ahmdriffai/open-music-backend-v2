@@ -11,6 +11,7 @@ const playlistSongs = require('./api/playlistSongs');
 const collaborations = require('./api/collaborations');
 const activities = require('./api/activities');
 const _exports = require('./api/exports');
+const uploads = require('./api/uploads');
 
 const init = async () => {
   const server = Hapi.server({
@@ -73,6 +74,9 @@ const init = async () => {
     },
     {
       plugin: _exports,
+    },
+    {
+      plugin: uploads,
     },
   ]);
 
